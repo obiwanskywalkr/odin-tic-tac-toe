@@ -8,6 +8,99 @@
     --primary-light: #f8fafc;
     --secondary-light: #e2e8f0;
     --primary-dark: #0f172a;
+    --cell-size: 7.5rem;
+    --mark-size: calc(var(--cell-size) * .85);
     font-family: 'Roboto', sans-serif;
     font-size: clamp(1rem, calc(.5em + 0.5vw), 1.75rem);
+}
+body {
+    background-color: var(--primary-light);
+}
+.board {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: center;
+    align-content: center;
+}
+.cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border: 2px solid var(--primary-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+.cell:nth-child(1),
+.cell:nth-child(2),
+.cell:nth-child(3) {
+    border-top: none;
+}
+.cell:nth-child(3n+3) {
+    border-right: none;
+}
+.cell:nth-child(7),
+.cell:nth-child(8),
+.cell:nth-child(9) {
+    border-bottom: none;
+}
+.cell:nth-child(3n+1) {
+    border-left: none;
+}
+.cell.x,
+.cell.o {
+    cursor: not-allowed;
+}
+.cell.x::before,
+.cell.x::after,
+.cell.o::before,
+.cell.o::after {
+    background-color: var(--primary-dark);
+}
+
+.board.x .cell:not(.x):not(.o):hover::before,
+.board.x .cell:not(.x):not(.o):hover::after,
+.board.o .cell:not(.x):not(.o):hover::before,
+.board.o .cell:not(.x):not(.o):hover::after {
+    background-color: lightgray;
+}
+
+.cell.x::before,
+.cell.x::after,
+.board.x .cell:not(.x):not(.o):hover::before,
+.board.x .cell:not(.x):not(.o):hover::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--mark-size) * .15);
+    height: var(--mark-size);
+}
+.cell.x::before,
+.board.x .cell:not(.x):not(.o):hover::before {
+    transform: rotate(45deg);
+}
+.cell.x::after,
+.board.x .cell:not(.x):not(.o):hover::after {
+    transform: rotate(-45deg);
+}
+.cell.o::before,
+.cell.o::after,
+.board.o .cell:not(.x):not(.o):hover::before,
+.board.o .cell:not(.x):not(.o):hover::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+}
+.cell.o::before,
+.board.o .cell:not(.x):not(.o):hover::before {
+    width: var(--mark-size);
+    height: var(--mark-size); 
+}
+.cell.o::after,
+.board.o .cell:not(.x):not(.o):hover::after {
+    width: calc(var(--mark-size) * .7);
+    height: calc(var(--mark-size) * .7);;
+    background-color: var(--primary-light);
 }

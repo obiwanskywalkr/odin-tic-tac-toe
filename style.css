@@ -24,7 +24,7 @@ body {
     justify-content: center;
     align-content: center;
 }
-.cell {
+#cell {
     width: var(--cell-size);
     height: var(--cell-size);
     border: 2px solid var(--primary-dark);
@@ -34,72 +34,72 @@ body {
     position: relative;
     cursor: pointer;
 }
-.cell:nth-child(1),
-.cell:nth-child(2),
-.cell:nth-child(3) {
+#cell:nth-child(1),
+#cell:nth-child(2),
+#cell:nth-child(3) {
     border-top: none;
 }
-.cell:nth-child(3n+3) {
+#cell:nth-child(3n+3) {
     border-right: none;
 }
-.cell:nth-child(7),
-.cell:nth-child(8),
-.cell:nth-child(9) {
+#cell:nth-child(7),
+#cell:nth-child(8),
+#cell:nth-child(9) {
     border-bottom: none;
 }
-.cell:nth-child(3n+1) {
+#cell:nth-child(3n+1) {
     border-left: none;
 }
-.cell.x,
-.cell.o {
+#cell.x,
+#cell.o {
     cursor: not-allowed;
 }
-.cell.x::before,
-.cell.x::after,
-.cell.o::before,
-.cell.o::after {
+#cell.x::before,
+#cell.x::after,
+#cell.o::before,
+#cell.o::after {
     background-color: var(--primary-dark);
 }
 
-.board.x .cell:not(.x):not(.o):hover::before,
-.board.x .cell:not(.x):not(.o):hover::after,
-.board.o .cell:not(.x):not(.o):hover::before,
-.board.o .cell:not(.x):not(.o):hover::after {
+.board.x #cell:not(.x):not(.o):hover::before,
+.board.x #cell:not(.x):not(.o):hover::after,
+.board.o #cell:not(.x):not(.o):hover::before,
+.board.o #cell:not(.x):not(.o):hover::after {
     background-color: lightgray;
 }
 
-.cell.x::before,
-.cell.x::after,
-.board.x .cell:not(.x):not(.o):hover::before,
-.board.x .cell:not(.x):not(.o):hover::after {
+#cell.x::before,
+#cell.x::after,
+.board.x #cell:not(.x):not(.o):hover::before,
+.board.x #cell:not(.x):not(.o):hover::after {
     content: '';
     position: absolute;
     width: calc(var(--mark-size) * .15);
     height: var(--mark-size);
 }
-.cell.x::before,
-.board.x .cell:not(.x):not(.o):hover::before {
+#cell.x::before,
+.board.x #cell:not(.x):not(.o):hover::before {
     transform: rotate(45deg);
 }
-.cell.x::after,
-.board.x .cell:not(.x):not(.o):hover::after {
+#cell.x::after,
+.board.x #cell:not(.x):not(.o):hover::after {
     transform: rotate(-45deg);
 }
-.cell.o::before,
-.cell.o::after,
-.board.o .cell:not(.x):not(.o):hover::before,
-.board.o .cell:not(.x):not(.o):hover::after {
+#cell.o::before,
+#cell.o::after,
+.board.o #cell:not(.x):not(.o):hover::before,
+.board.o #cell:not(.x):not(.o):hover::after {
     content: '';
     position: absolute;
     border-radius: 50%;
 }
-.cell.o::before,
-.board.o .cell:not(.x):not(.o):hover::before {
+#cell.o::before,
+.board.o #cell:not(.x):not(.o):hover::before {
     width: var(--mark-size);
     height: var(--mark-size); 
 }
-.cell.o::after,
-.board.o .cell:not(.x):not(.o):hover::after {
+#cell.o::after,
+.board.o #cell:not(.x):not(.o):hover::after {
     width: calc(var(--mark-size) * .7);
     height: calc(var(--mark-size) * .7);;
     background-color: var(--primary-light);

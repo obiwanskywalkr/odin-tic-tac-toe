@@ -7,25 +7,109 @@ const Players = (name, sign) => {
 const gameBoard = (() => {
     // let matrix = ['x', 'o', 'x', 'o', 'x', 'o', 'x', 'o', 'x'];
     let _matrix = new Array(9);
+    const resetBoard = () => _matrix = new Array(9);
+    const getMatrix = () => _matrix;
+    const getMatrixValue = (index) => _matrix[index];
+    const setMatrixValue = (index, value) => _matrix[index] = value;
 
-    const getMatrix = (index) => {
-        return _matrix
-    }
-    const getMatrixValue = (index) => {
-        return _matrix[index]
-    }
-    const setMatrixValue = (index, value) => {
-        return (_matrix[index] = value)
-    }
-
-    const resetBoard = () => {
-        _matrix = new Array(9);
-    }
     return { getMatrix, getMatrixValue, setMatrixValue, resetBoard }
+
+})();
+
+const displayController = (() => {
+    const board = document.getElementById('board');
+    const cellGrid = document.querySelectorAll('#cell');
+    const reset = document.getElementById('reset')
+
+    
+
+    const render = () => {
+        for (let i = 0; i < cellGrid.length; i++) {
+            if (gameBoard.getMatrixValue(i) === undefined) continue;
+            else { cellGrid[i].classList.add(`${gameBoard.getMatrixValue(i)}`) }     
+        }
+    }
+
+    const handleDraw = () => {
+        if (!(gameController.checkDraw())) return;
+        console.log('draw')
+        gameController.resetGame();
+    }
+
+    const handleWin = () => {
+        if (!(gameController.checkWin(cellGrid, gameController.getTurn()))) return;
+        console.log('winner');
+        gameController.resetGame(); 
+        toggleTurnIndicator(); // :)
+    }
+
+    const handleReset = () => {
+        cellGrid.forEach(cell => {
+            cell.removeAttribute('data-value');
+            cell.classList.remove('x');
+            cell.classList.remove('o');
+        })
+        board.classList.remove('o')
+        board.classList.add('x');
+    }
+
+    const handleClick = (event) => {
+        reset.addEventListener('click', gameController.resetGame);
+        setCellValue(event.target);
+        render();
+        gameController.incrementTurnCount()
+        handleDraw();
+        handleWin();
+        toggleTurnIndicator();
+    }
+
+    const addClickListener = () => {
+        cellGrid.forEach(cell => {
+            cell.addEventListener('click', handleClick, {once: true});
+        });
+    }
+
+    const removeClickListener = () => {
+        cellGrid.forEach(cell => {
+            cell.removeEventListener('click', handleClick, {once: true});
+        });
+    }
+
+    // Toggles turn and toggles current turn hover effect by applying
+    // an X or O class to the gameboard.
+    const toggleTurnIndicator = () => {
+        (board.classList.contains('x')) ?
+            (board.classList.remove('x'), board.classList.add('o')) :
+            (board.classList.remove('o'), board.classList.add('x'));
+
+        gameController.toggleTurn();
+    }
+
+    // Getter and setter for cellGrid indices using data-attributes
+    // Correlates to indices in gameBoard matrix
+    const getCellIndex = (cell) => cell.getAttribute('data-index');
+    const setCellIndex = () => {
+        for (let i = 0; i < cellGrid.length; i++) {
+            if (cellGrid[i].hasAttribute('data-index')) return;
+            cellGrid[i].setAttribute('data-index', i);
+        }
+    }
+    
+    // Getter and setter for cellGrid values using data-attributes
+    // Setter pushes onClick values to gameBoard matrix
+    const getCellValue = (cell) => cell.getAttribute('data-value');
+    const setCellValue = (cell) => {
+        cell.setAttribute('data-value', `${gameController.getTurn()}`);
+        gameBoard.setMatrixValue(getCellIndex(cell), getCellValue(cell));
+    }
+
+    return { handleReset, addClickListener, removeClickListener, setCellIndex, }
+
 })();
 
 const gameController = (() => {
     let _currentTurn = 'x';
+    let _turnCount = 0;
     let _winConditions = [
         [0, 1, 2],
         [3, 4, 5],
@@ -37,14 +121,22 @@ const gameController = (() => {
         [2, 4, 6]
     ]
 
-    const getTurn = () => {
-        return _currentTurn;
+    const startGame = () => {
+        _currentTurn = 'x'
+        displayController.setCellIndex();
+        displayController.addClickListener();
+    };
+
+    const resetGame = () => {
+        displayController.handleReset();
+        gameBoard.resetBoard();
+        displayController.removeClickListener();
+        _turnCount = 0
+        startGame();
     }
 
-    const toggleTurn = () => {
-        return _currentTurn = (_currentTurn === 'x') ? 
-            (_currentTurn = 'o') : (_currentTurn = 'x');
-    }
+    const checkDraw = () => _turnCount === 9;
+
     // Loops through all winConditions checking that every index in the 
     // current condition contains either X class or O class.
     // Returns true if at least one condition meets criteria
@@ -56,62 +148,15 @@ const gameController = (() => {
         })
     }
 
+    const getTurn = () => _currentTurn;
 
-    return { getTurn, toggleTurn, checkWin }
+    const toggleTurn = () => _currentTurn = 
+        (_currentTurn === 'x') ? (_currentTurn = 'o') : (_currentTurn = 'x');
+
+    const incrementTurnCount = () => _turnCount++;
+
+    return { startGame, resetGame, checkDraw, checkWin, getTurn, toggleTurn, incrementTurnCount, }
+
 })();
 
-const displayController = (() => {
-    const board = document.getElementById('board');
-    const cellGrid = document.querySelectorAll('#cell');
-
-    const render = () => {
-        for (let i = 0; i < cellGrid.length; i++) {
-            if (gameBoard.getMatrixValue(i) === undefined) continue;
-            else { cellGrid[i].classList.add(`${gameBoard.getMatrixValue(i)}`) }     
-        }
-    }
-    // Toggles turns for the current turn indicator hover effect by applying
-    // an X or O class to the gameboard.
-    const toggleTurnIndicator = () => {
-        (board.classList.contains('x')) ?
-            (board.classList.remove('x'), board.classList.add('o')) :
-            (board.classList.remove('o'), board.classList.add('x'));
-        gameController.toggleTurn();
-    }
-    // Getter and setter for cellGrid indices using data-attributes
-    // Correlates to indices in gameBoard matrix
-    const setCellIndex = (() => {
-        for (let i = 0; i < cellGrid.length; i++) {
-            cellGrid[i].setAttribute('data-index', i);
-        }
-    })();
-
-    const getCellIndex = (cell) => {
-        return cell.getAttribute('data-index');
-    }
-    // Getter and setter for cellGrid values using data-attributes
-    // Setter pushes onClick values to gameBoard matrix
-    const getCellValue = (cell) => {
-        return cell.getAttribute('data-value');
-    }
-
-    const setCellValue = (cell) => {
-        cell.setAttribute('data-value', `${gameController.getTurn()}`);
-        gameBoard.setMatrixValue(getCellIndex(cell), getCellValue(cell));
-    }
-
-    const addCellClick = (() => {
-        cellGrid.forEach((cell) => {
-            cell.addEventListener('click', (event) => {
-                setCellValue(event.target);
-                render();
-                if (gameController.checkWin(cellGrid, gameController.getTurn())) {
-                    console.log('winner');
-                }
-                toggleTurnIndicator();
-                });
-    
-            }, {once: true});
-        })();
-})();
-
+window.onload = gameController.startGame();

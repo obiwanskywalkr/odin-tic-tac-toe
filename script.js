@@ -19,9 +19,14 @@ const gameBoard = (() => {
 const displayController = (() => {
     const board = document.getElementById('board');
     const cellGrid = document.querySelectorAll('#cell');
-    const reset = document.getElementById('reset')
+    const reset = document.getElementById('reset');
+    const start = document.getElementById('start');
+    const startOverlay = document.getElementById('startOverlay');
 
-    
+    const initializeButtons = (() => {
+        start.addEventListener('click', handleStart);
+        reset.addEventListener('click', gameController.resetGame);
+    })
 
     const render = () => {
         for (let i = 0; i < cellGrid.length; i++) {
@@ -43,6 +48,12 @@ const displayController = (() => {
         toggleTurnIndicator(); // :)
     }
 
+    const handleStart = () => {
+        startOverlay.classList.remove('visible');
+        startOverlay.classList.add('hidden');
+        gameController.startGame();
+    }
+    
     const handleReset = () => {
         cellGrid.forEach(cell => {
             cell.removeAttribute('data-value');
@@ -54,7 +65,6 @@ const displayController = (() => {
     }
 
     const handleClick = (event) => {
-        reset.addEventListener('click', gameController.resetGame);
         setCellValue(event.target);
         render();
         gameController.incrementTurnCount()
@@ -103,7 +113,7 @@ const displayController = (() => {
         gameBoard.setMatrixValue(getCellIndex(cell), getCellValue(cell));
     }
 
-    return { handleReset, addClickListener, removeClickListener, setCellIndex, }
+    return { initializeButtons, handleReset, addClickListener, removeClickListener, setCellIndex, }
 
 })();
 
@@ -159,4 +169,4 @@ const gameController = (() => {
 
 })();
 
-window.onload = gameController.startGame();
+window.onload = displayController.initializeButtons();

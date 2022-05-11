@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
-* {
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Titan+One&display=swap');* {
     margin: 0;
     padding: 0;
 }
@@ -8,13 +6,77 @@
     --primary-light: #f8fafc;
     --secondary-light: #e2e8f0;
     --primary-dark: #0f172a;
+    --secondary-dark: #94a3b8;
     --cell-size: 7.5rem;
     --mark-size: calc(var(--cell-size) * .85);
     font-family: 'Roboto', sans-serif;
     font-size: clamp(1rem, calc(.5em + 0.5vw), 1.75rem);
 }
+* {
+    margin: 0;
+    padding: 0;
+}
 body {
     background-color: var(--primary-light);
+}
+#startOverlay {
+    background-color: rgba(248 , 250, 252, 0.95);
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+.logo {
+    font-family: 'Titan One', cursive;
+    font-size: 4rem;
+    text-shadow: 3.5px 3.5px var(--secondary-dark);
+}
+.inputContainer {
+    display: flex;
+    gap: 2rem;
+}
+.playerLabel {
+    font-family: 'Titan One', cursive;
+    font-size: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+}
+.playerLabel:hover {
+    text-shadow: 3.5px 3.5px var(--secondary-dark);
+}
+.textbox {
+    height: 2rem;
+    width: 10rem;
+    border: 3px solid var(--primary-dark);
+    border-radius: 10px;
+    font-size: 1rem;
+    text-align: center;
+}
+.textbox:hover {
+    transform: scale(1.05);
+}
+#start {
+    background-color: var(--primary-dark);
+    width: 10rem;
+    height: 2.5rem;
+    margin-top: 1rem;
+    border-radius: 10px;
+    color: var(--primary-light);
+    font-size: 1rem;
+    font-weight: 900;
+    border: none;
+}
+#start:hover {
+    transform: scale(1.05);
 }
 .board {
     width: 100vw;
@@ -103,4 +165,12 @@ body {
     width: calc(var(--mark-size) * .7);
     height: calc(var(--mark-size) * .7);;
     background-color: var(--primary-light);
+}
+.hidden {
+    transform: scale(0);
+    transition: 0.2s ease-out;
+    visibility: hidden;
+}
+.visible {
+    visibility: visible;
 }

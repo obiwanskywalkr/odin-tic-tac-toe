@@ -9,6 +9,18 @@
     <title>Tic-Tac-Toe</title>
 </head>
 <body>
+    <div id="startOverlay" class="visible">
+        <div class="logo">Tic Tac Toe</div>
+        <div class="inputContainer">
+            <label for="playerX" class="playerLabel">X
+                <input type="text" name="playerX" id="playerX" class="textbox" placeholder="Player X" maxlength="15">
+            </label>
+            <label for="playerO" class="playerLabel">O
+                <input type="text" name="playerO" id="playerO" class="textbox" placeholder="Player O" maxlength="15">
+            </label>
+        </div>
+        <button id="start">Start Game</button>
+    </div>
     <div class="board x" id="board">
         <div id="cell"></div>
         <div id="cell"></div>
@@ -20,5 +32,7 @@
         <div id="cell"></div>
         <div id="cell"></div>
     </div>
+    <div id="endOverlay" class="hidden"></div>
+    <button type="reset" id="reset">Reset</button>
 </body>
 </html>

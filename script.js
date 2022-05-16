@@ -1,6 +1,7 @@
-const Players = (name, sign) => {
+const Player = (name, sign) => {
     this.name = name;
     this.sign = sign;
+
     return { name, sign, }
 }
 
@@ -17,16 +18,16 @@ const gameBoard = (() => {
 })();
 
 const displayController = (() => {
+    const startOverlay = document.getElementById('startOverlay');
+    const endOverlay = document.getElementById('endOverlay');
     const board = document.getElementById('board');
     const cellGrid = document.querySelectorAll('#cell');
-    const reset = document.getElementById('reset');
     const start = document.getElementById('start');
-    const startOverlay = document.getElementById('startOverlay');
-
-    const initializeButtons = (() => {
-        start.addEventListener('click', handleStart);
-        reset.addEventListener('click', gameController.resetGame);
-    })
+    const restart = document.getElementById('restart');
+    const xName = document.getElementById('playerX');
+    const oName = document.getElementById('playerO');
+    let xPlayer;
+    let oPlayer;
 
     const render = () => {
         for (let i = 0; i < cellGrid.length; i++) {
@@ -34,44 +35,73 @@ const displayController = (() => {
             else { cellGrid[i].classList.add(`${gameBoard.getMatrixValue(i)}`) }     
         }
     }
+    const initializePlayers = (xName, oName) => {
+        xPlayer = Player(xName, 'x');
+        oPlayer =  Player(oName, 'o');
 
-    const handleDraw = () => {
-        if (!(gameController.checkDraw())) return;
-        console.log('draw')
-        gameController.resetGame();
-    }
-
-    const handleWin = () => {
-        if (!(gameController.checkWin(cellGrid, gameController.getTurn()))) return;
-        console.log('winner');
-        gameController.resetGame(); 
-        toggleTurnIndicator(); // :)
+        return { xPlayer, oPlayer }
     }
 
     const handleStart = () => {
-        startOverlay.classList.remove('visible');
-        startOverlay.classList.add('hidden');
+        initializePlayers(xName.value, oName.value);
+        startOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.001)';
+        startOverlay.classList.add('hide');
+        restart.classList.remove('hide');
         gameController.startGame();
+    }
+
+    const handleEnd = () => {
+        if (gameController.checkWin(cellGrid, gameController.getTurn())) {
+            let winner = (gameController.getTurn() === 'x') ? xPlayer.name : oPlayer.name;
+            if (winner === '') {
+                winner = gameController.getTurn(); 
+            }
+            toggleTurnIndicator(); // :)
+            endOverlay.classList.remove('hide');
+            endOverlay.textContent = `${winner} wins!`
+            removeClickListener();
+            endOverlay.addEventListener('click', () => {
+                endOverlay.classList.add('hide');
+            })
+        } else if (gameController.checkDraw()) {
+            toggleTurnIndicator(); // :)
+            endOverlay.classList.remove('hide');
+            endOverlay.textContent = `Draw!`;
+            removeClickListener();
+            endOverlay.addEventListener('click', () => {
+                endOverlay.classList.add('hide');
+            })
+        } else {
+            return;
+        }
     }
     
     const handleReset = () => {
+        board.classList.remove('o');
+        board.classList.add('x');
         cellGrid.forEach(cell => {
             cell.removeAttribute('data-value');
             cell.classList.remove('x');
             cell.classList.remove('o');
-        })
-        board.classList.remove('o')
-        board.classList.add('x');
+        });
     }
 
+    // When a cell is clicked:
+    // Sets value of cell to currentTurn and increments turn count,
+    // checks for draws or wins,
+    // renders the new board and toggles turn indicator
     const handleClick = (event) => {
         setCellValue(event.target);
-        render();
         gameController.incrementTurnCount()
-        handleDraw();
-        handleWin();
+        render();
+        handleEnd();
         toggleTurnIndicator();
     }
+
+    const initializeButtons = (() => {
+        start.addEventListener('click', handleStart);
+        restart.addEventListener('click', gameController.resetGame);
+    })
 
     const addClickListener = () => {
         cellGrid.forEach(cell => {
@@ -113,7 +143,7 @@ const displayController = (() => {
         gameBoard.setMatrixValue(getCellIndex(cell), getCellValue(cell));
     }
 
-    return { initializeButtons, handleReset, addClickListener, removeClickListener, setCellIndex, }
+    return { initializePlayers, initializeButtons, handleReset, addClickListener, removeClickListener, setCellIndex }
 
 })();
 
@@ -135,13 +165,13 @@ const gameController = (() => {
         _currentTurn = 'x'
         displayController.setCellIndex();
         displayController.addClickListener();
-    };
+    }
 
     const resetGame = () => {
         displayController.handleReset();
         gameBoard.resetBoard();
         displayController.removeClickListener();
-        _turnCount = 0
+        _turnCount = 0;
         startGame();
     }
 
@@ -153,9 +183,9 @@ const gameController = (() => {
     const checkWin = (grid, currentTurn) => {
         return _winConditions.some(condition => {
             return condition.every(cell => {
-                return grid[cell].classList.contains(currentTurn)
-            })
-        })
+                return grid[cell].classList.contains(currentTurn);
+            });
+        });
     }
 
     const getTurn = () => _currentTurn;
@@ -165,7 +195,7 @@ const gameController = (() => {
 
     const incrementTurnCount = () => _turnCount++;
 
-    return { startGame, resetGame, checkDraw, checkWin, getTurn, toggleTurn, incrementTurnCount, }
+    return { startGame, resetGame, checkDraw, checkWin, getTurn, toggleTurn, incrementTurnCount }
 
 })();
 

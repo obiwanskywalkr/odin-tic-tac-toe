@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
     <script src="./script.js" defer></script>
-    <title>Tic-Tac-Toe</title>
+    <title>Tic Tac Toe</title>
 </head>
 <body>
-    <div id="startOverlay" class="visible">
+    <div id="startOverlay" class="">
         <div class="logo">Tic Tac Toe</div>
         <div class="inputContainer">
             <label for="playerX" class="playerLabel">X
@@ -18,21 +18,24 @@
             <label for="playerO" class="playerLabel">O
                 <input type="text" name="playerO" id="playerO" class="textbox" placeholder="Player O" maxlength="15">
             </label>
+            <button id="start">Start Game</button>
         </div>
-        <button id="start">Start Game</button>
+        
     </div>
-    <div class="board x" id="board">
-        <div id="cell"></div>
-        <div id="cell"></div>
-        <div id="cell"></div>
-        <div id="cell"></div>
-        <div id="cell"></div>
-        <div id="cell"></div>
-        <div id="cell"></div>
-        <div id="cell"></div>
-        <div id="cell"></div>
+    <div class="container">
+        <div class="board x" id="board">
+            <div id="cell"></div>
+            <div id="cell"></div>
+            <div id="cell"></div>
+            <div id="cell"></div>
+            <div id="cell"></div>
+            <div id="cell"></div>
+            <div id="cell"></div>
+            <div id="cell"></div>
+            <div id="cell"></div>
+        </div>
+        <button type="reset" id="restart" class="hide">Restart</button>
     </div>
-    <div id="endOverlay" class="hidden"></div>
-    <button type="reset" id="reset">Reset</button>
+    <div id="endOverlay" class="hide"></div>
 </body>
 </html>
